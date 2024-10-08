@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
-import { Alert, ImageBackground, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ImageBackground, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { z } from 'zod';
-import booksPNG from '../../../assets/images/books.png';
+import booksPNG from '../../../src/assets/images/books.png';
 import FormInput from '../../components/FormInput';
 import { useAuthContext } from '../../contexts/auth';
 
@@ -21,8 +21,8 @@ export default function Login() {
   const navigation = useNavigation();
   const { signIn } = useAuthContext();
 
-  const { control, handleSubmit } = useForm<ValidationSchema>({
-    mode: 'all',
+  const { control, handleSubmit, setValue } = useForm<ValidationSchema>({
+    mode: 'onBlur',
     resolver: zodResolver(validationSchema),
     defaultValues: {
       email: '',
@@ -34,6 +34,8 @@ export default function Login() {
     const isSignedInMessage = await signIn(data.email, data.password);
 
     if (isSignedInMessage === 'success') {
+      setValue('email', '');
+      setValue('password', '');
       navigation.navigate('Home' as never);
     } else {
       Alert.alert('Erro', 'Email ou senha incorretos.', [{ text: 'OK' }]);
@@ -48,6 +50,7 @@ export default function Login() {
       imageStyle={{ opacity: 0.8 }}
     >
       <View className="justify-between space-y-12 w-full p-4 bg-white rounded-lg">
+        <StatusBar backgroundColor="#facc15" />
         <View className="justify-between space-y-6 ">
           <View>
             <FormInput control={control} name="email" label="E-Mail" placeholder="E-Mail" />
