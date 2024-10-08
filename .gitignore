@@ -11,6 +11,8 @@ npm-debug.*
 web-build/
 app-example/
 .prettierrc
+.env
+env.ts
 
 # macOS
 .DS_Store

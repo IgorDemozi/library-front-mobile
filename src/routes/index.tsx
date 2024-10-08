@@ -1,22 +1,27 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
-import Home from "../pages/home";
-import Login from "../pages/login";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React from 'react';
+import CustomHeader from '../components/CustomHeader';
+import Home from '../pages/home';
+import Login from '../pages/login';
+import RegisterBook from '../pages/registerBook';
 
 const StackNavigator = createNativeStackNavigator();
 
 export default function Routes() {
   return (
-    <StackNavigator.Navigator screenOptions={{ headerBackVisible: false }}>
-      <StackNavigator.Screen
-        name="Login"
-        options={{ headerShown: false }}
-        component={Login}
-      />
+    <StackNavigator.Navigator
+      screenOptions={{ headerBackVisible: false, headerStyle: { backgroundColor: '#facc15' } }}
+    >
+      <StackNavigator.Screen name="Login" component={Login} options={{ headerShown: false }} />
       <StackNavigator.Screen
         name="Home"
         component={Home}
-        options={{ title: "Início" }}
+        options={{ headerTitle: () => <CustomHeader title="Início" /> }}
+      />
+      <StackNavigator.Screen
+        name="RegisterBook"
+        component={RegisterBook}
+        options={{ headerTitle: () => <CustomHeader title="Cadastro" /> }}
       />
     </StackNavigator.Navigator>
   );

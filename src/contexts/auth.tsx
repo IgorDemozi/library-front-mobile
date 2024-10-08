@@ -9,6 +9,7 @@ interface IAuthContext {
   userEmail: string;
   token: string;
   signIn(email: string, password: string): Promise<string>;
+  signOff(): void;
 }
 
 export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
@@ -50,8 +51,15 @@ function AuthProvider({ children }: AuthProviderProps) {
     return isSignedIn;
   }
 
+  function signOff() {
+    setUserEmail('');
+    setToken('');
+  }
+
   return (
-    <AuthContext.Provider value={{ userEmail, token, signIn }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ userEmail, token, signIn, signOff }}>
+      {children}
+    </AuthContext.Provider>
   );
 }
 

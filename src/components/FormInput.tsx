@@ -1,11 +1,8 @@
-import { Control, Controller, FieldErrors, FieldValues, Noop } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 import { Text, TextInput, View } from 'react-native';
-import { clsx } from 'clsx';
 
 interface FormInputProps {
-  className?: string;
   control: Control<any>;
-  errors?: FieldErrors<FieldValues>;
   label?: string;
   name: string;
   placeholder?: string;
@@ -15,8 +12,7 @@ interface FormInputProps {
 const FormInput = ({
   control,
   name,
-  className,
-  errors,
+
   label,
   placeholder,
   secureTextEntry = false,
