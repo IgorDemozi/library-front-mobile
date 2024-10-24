@@ -1,7 +1,7 @@
 import Svg, { Path } from 'react-native-svg';
-import { IconProps } from '../../interfaces/Icon';
+import { IconProps } from '../../../interfaces/Icon';
 
-const HomeRegisterIcon = ({ color, size }: IconProps) => {
+const RegisterIcon = ({ color, size }: IconProps) => {
   return (
     <Svg
       width={size !== undefined ? size : 40}
@@ -18,4 +18,4 @@ const HomeRegisterIcon = ({ color, size }: IconProps) => {
   );
 };
 
-export default HomeRegisterIcon;
+export default RegisterIcon;

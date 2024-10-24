@@ -1,11 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
-import { Alert, ImageBackground, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ImageBackground, Text, TouchableOpacity, View } from 'react-native';
 import { z } from 'zod';
 import booksPNG from '../../../src/assets/images/books.png';
 import FormInput from '../../components/FormInput';
 import { useAuthContext } from '../../contexts/auth';
+import CustomButton from '../../components/CustomButton';
+import { yellow400 } from '../../colors';
 
 const validationSchema = z.object({
   email: z
@@ -31,7 +33,7 @@ export default function Login() {
   });
 
   async function login(data: ValidationSchema) {
-    const isSignedInMessage = await signIn(data.email, data.password);
+    const isSignedInMessage = await signIn(data.email.trim(), data.password);
 
     if (isSignedInMessage === 'success') {
       setValue('email', '');
@@ -50,7 +52,6 @@ export default function Login() {
       imageStyle={{ opacity: 0.8 }}
     >
       <View className="justify-between space-y-12 w-full p-4 bg-white rounded-lg">
-        <StatusBar backgroundColor="#facc15" />
         <View className="justify-between space-y-6 ">
           <View>
             <FormInput control={control} name="email" label="E-Mail" placeholder="E-Mail" />
@@ -68,12 +69,7 @@ export default function Login() {
         </View>
 
         <View className="items-center">
-          <TouchableOpacity
-            className="border rounded-full px-8 py-2 w-28"
-            onPress={handleSubmit(login)}
-          >
-            <Text className="text-lg text-center">Logar</Text>
-          </TouchableOpacity>
+          <CustomButton onPress={handleSubmit(login)} text="Entrar" backgroundColor={yellow400} />
         </View>
       </View>
     </ImageBackground>
