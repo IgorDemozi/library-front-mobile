@@ -1,7 +1,7 @@
 import Svg, { Path } from 'react-native-svg';
-import { IconProps } from '../../interfaces/Icon';
+import { IconProps } from '../../../interfaces/Icon';
 
-const HomeLoanIcon = ({ color, size }: IconProps) => {
+const LoanIcon = ({ color, size }: IconProps) => {
   return (
     <Svg
       width={size !== undefined ? size : 38}
@@ -18,4 +18,4 @@ const HomeLoanIcon = ({ color, size }: IconProps) => {
   );
 };
 
-export default HomeLoanIcon;
+export default LoanIcon;

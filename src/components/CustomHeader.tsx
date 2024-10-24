@@ -1,7 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { Alert, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, StatusBar, Text, View } from 'react-native';
+import { slate200, slate600 } from '../colors';
 import { useAuthContext } from '../contexts/auth';
+import CustomButton from './CustomButton';
 
 interface CustomHeaderProps {
   title: string;
@@ -33,12 +35,12 @@ export default function CustomHeader({ title }: CustomHeaderProps) {
 
       <Text className="font-medium text-lg">{title}</Text>
 
-      <TouchableOpacity
-        className="border-2 border-slate-600 rounded-lg py-1 w-16 bg-slate-200"
+      <CustomButton
         onPress={logOut}
-      >
-        <Text className="text-lg text-center text-slate-600 font-medium">Sair</Text>
-      </TouchableOpacity>
+        text="Sair"
+        backgroundColor={slate200}
+        borderAndTextColor={slate600}
+      />
     </View>
   );
 }

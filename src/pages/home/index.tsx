@@ -1,9 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import HomeLibraryIcon from '../../assets/images/home_library_icon';
-import HomeLoanIcon from '../../assets/images/home_loan_icon';
-import HomeRegisterIcon from '../../assets/images/home_register_icon';
+import HomeLibraryIcon from '../../assets/images/home/library_icon';
+import HomeLoanIcon from '../../assets/images/home/loan_icon';
+import HomeRegisterIcon from '../../assets/images/home/register_icon';
 import { useAuthContext } from '../../contexts/auth';
 
 export default function Home() {
