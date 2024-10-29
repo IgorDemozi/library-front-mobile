@@ -41,7 +41,7 @@ function AuthProvider({ children }: AuthProviderProps) {
       .catch(err => {
         console.log('error => ', err);
 
-        if (err.response.status === 404) {
+        if (err.response.status && err.response.status === 404) {
           isSignedIn = 'Não foi possivel conectar ao servidor!';
         } else {
           isSignedIn = err.response?.data[0].message;

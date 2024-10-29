@@ -4,6 +4,7 @@ import CustomHeader from '../components/CustomHeader';
 import Home from '../pages/home';
 import Login from '../pages/login';
 import RegisterBook from '../pages/registerBook';
+import SearchBook from '../pages/searchPage';
 
 const StackNavigator = createNativeStackNavigator();
 
@@ -22,6 +23,11 @@ export default function Routes() {
         name="RegisterBook"
         component={RegisterBook}
         options={{ headerTitle: () => <CustomHeader title="Cadastro" /> }}
+      />
+      <StackNavigator.Screen
+        name="SearchBook"
+        component={SearchBook}
+        options={{ headerTitle: () => <CustomHeader title="Biblioteca" /> }}
       />
     </StackNavigator.Navigator>
   );

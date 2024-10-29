@@ -93,7 +93,7 @@ export default function RegisterBook() {
       .catch(error => {
         console.log(error);
 
-        if (error.request.status === 401) {
+        if (error.request.status && error.response.status === 401) {
           Alert.alert('Operação não autorizada', 'Redirecionando para a tela de login...', [
             {
               text: 'Ok',
