@@ -1,13 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
-import { Alert, ImageBackground, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ImageBackground, View } from 'react-native';
 import { z } from 'zod';
 import booksPNG from '../../../src/assets/images/books.png';
+import { yellow400 } from '../../colors';
+import CustomButton from '../../components/CustomButton';
 import FormInput from '../../components/FormInput';
 import { useAuthContext } from '../../contexts/auth';
-import CustomButton from '../../components/CustomButton';
-import { yellow400 } from '../../colors';
 
 const validationSchema = z.object({
   email: z

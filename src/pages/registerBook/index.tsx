@@ -75,8 +75,6 @@ export default function RegisterBook() {
       } as any);
     }
 
-    console.log('formData => ', formData);
-
     api
       .post('/books/mobilePostBook', formData, {
         headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
