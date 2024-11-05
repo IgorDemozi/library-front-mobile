@@ -12,7 +12,7 @@ export default function SearchBook() {
   const [books, setBooks] = useState<Book[]>();
   const [search, setsearch] = useState('');
   const [loadingMessage, setLoadingMessage] = useState('Carregando informações...');
-  const imgSize = 195;
+  const imgSize = 180;
 
   useEffect(() => {
     api
@@ -39,7 +39,7 @@ export default function SearchBook() {
           <View className="p-2">
             <Image
               source={{ uri: `${BASE_URL}/upload/${book.image}` }}
-              style={{ height: imgSize, width: imgSize * 0.7 }}
+              style={{ height: imgSize, width: imgSize * 0.75 }}
               alt={`Capa do livro ${book.title}`}
               onError={err => console.log('erro =>', err.nativeEvent.error)}
             />
@@ -55,10 +55,7 @@ export default function SearchBook() {
   }
 
   return (
-    <ScrollView
-      className="flex-1 p-2 space-y-4"
-      contentContainerStyle={{ alignContent: 'space-around', alignItems: 'center' }}
-    >
+    <ScrollView className="flex-1 p-2 space-y-4">
       <View
         className="flex-row items-center border-2 mt-4 pr-4 rounded-lg w-full"
         style={{ borderColor: gray }}
@@ -71,7 +68,7 @@ export default function SearchBook() {
         <SearchIcon size={24} color={slate600} />
       </View>
 
-      <View className="flex-row w-full justify-around">
+      <View className="flex-row w-full flex-wrap justify-center gap-2">
         {books ? books.map(book => renderBook(book)) : <Text>{loadingMessage}</Text>}
       </View>
     </ScrollView>
