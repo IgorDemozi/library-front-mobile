@@ -1,9 +1,6 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { api } from '../api';
-
-interface AuthProviderProps {
-  children: ReactNode;
-}
+import { IChildrenProp } from '../types';
 
 interface IAuthContext {
   userEmail: string;
@@ -14,7 +11,7 @@ interface IAuthContext {
 
 export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
-function AuthProvider({ children }: AuthProviderProps) {
+function AuthProvider({ children }: IChildrenProp) {
   const [userEmail, setUserEmail] = useState('');
   const [token, setToken] = useState('');
 

@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import CustomHeader from '../components/CustomHeader';
+import BookInfo from '../pages/bookInfo';
 import Home from '../pages/home';
 import Login from '../pages/login';
 import RegisterBook from '../pages/registerBook';
@@ -28,6 +29,11 @@ export default function Routes() {
         name="SearchBook"
         component={SearchBook}
         options={{ headerTitle: () => <CustomHeader title="Biblioteca" /> }}
+      />
+      <StackNavigator.Screen
+        name="BookInfo"
+        component={BookInfo}
+        options={{ headerShown: false }}
       />
     </StackNavigator.Navigator>
   );

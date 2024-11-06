@@ -1,5 +1,7 @@
+import { ReactNode } from 'react';
+
 export type Book = {
-  id: number | string;
+  id: string;
   title: string;
   author: string;
   genre: string;
@@ -19,3 +21,7 @@ export type RentHistory = {
   loanDate: string;
   returnDate: string;
 };
+
+export interface IChildrenProp {
+  children: ReactNode;
+}

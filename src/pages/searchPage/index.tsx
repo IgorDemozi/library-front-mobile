@@ -6,9 +6,13 @@ import { gray, slate600 } from '../../colors';
 import { useAuthContext } from '../../contexts/auth';
 import { Book } from '../../types';
 import { BASE_URL } from '../../../env';
+import { useBookContext } from '../../contexts/book';
+import { useNavigation } from '@react-navigation/native';
 
 export default function SearchBook() {
   const { token } = useAuthContext();
+  const { setBookId } = useBookContext();
+  const navigation = useNavigation();
   const [books, setBooks] = useState<Book[]>();
   const [search, setsearch] = useState('');
   const [loadingMessage, setLoadingMessage] = useState('Carregando informações...');
@@ -35,6 +39,10 @@ export default function SearchBook() {
         <TouchableOpacity
           key={book.id}
           className="border-2 border-slate-400 rounded-lg bg-slate-200 w-40 h-fit items-center"
+          onPress={() => {
+            setBookId(book.id);
+            navigation.navigate('BookInfo' as never);
+          }}
         >
           <View className="p-2">
             <Image
