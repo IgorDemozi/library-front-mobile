@@ -1,6 +1,7 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import React, { useState } from 'react';
 import { api } from '../../api';
+import { yellow400 } from '../../colors';
 import { useAuthContext } from '../../contexts/auth';
 import { useBookContext } from '../../contexts/book';
 import { Book } from '../../types';
@@ -31,11 +32,11 @@ export default function BookInfo() {
         drawerActiveTintColor: '#000',
         // drawerInactiveBackgroundColor: '#f1f1f1',
         // drawerInactiveTintColor: '#000',
+        headerStyle: { backgroundColor: yellow400 },
       }}
     >
       <Drawer.Screen
         name="DisplayBook"
-        initialParams={book}
         options={{
           title: 'Informações do livro',
         }}

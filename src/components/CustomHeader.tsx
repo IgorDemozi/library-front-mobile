@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Alert, StatusBar, Text, View } from 'react-native';
-import { slate200, slate600 } from '../colors';
+import { slate200, slate600, yellow400 } from '../colors';
 import { useAuthContext } from '../contexts/auth';
 import CustomButton from './CustomButton';
 
@@ -31,7 +31,7 @@ export default function CustomHeader({ title }: CustomHeaderProps) {
 
   return (
     <View className="flex-row justify-between items-center w-full pr-6">
-      <StatusBar backgroundColor="#facc15" />
+      <StatusBar backgroundColor={yellow400} />
 
       <Text className="font-medium text-lg">{title}</Text>
 
