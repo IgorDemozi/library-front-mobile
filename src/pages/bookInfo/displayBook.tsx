@@ -23,13 +23,22 @@ export default function DisplayBook({ book }: DisplayBookProps) {
           />
           <View className="flex-1">
             <Text className="text-center font-medium text-lg">{book.title}</Text>
-            <Text className="wrap">Autor: {book.author}eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee</Text>
-            <Text>Gênero: {book.genre}</Text>
-            <Text>Data de entrada: {format(book.systemEntryDate, 'dd/MM/yyyy')}</Text>
+            <Text className="wrap">
+              <Text className="font-medium">Autor: </Text> {book.author}
+            </Text>
+            <Text className="wrap">
+              <Text className="font-medium">Gênero: </Text> {book.genre}
+            </Text>
+            <Text className="wrap">
+              <Text className="font-medium">Data de entrada: </Text>{' '}
+              {format(book.systemEntryDate, 'dd/MM/yyyy')}
+            </Text>
           </View>
         </View>
 
-        <Text>Sinopse: {book.synopsis}</Text>
+        <Text>
+          <Text className="font-medium">Sinopse: </Text> {book.synopsis}
+        </Text>
       </View>
     );
 }
