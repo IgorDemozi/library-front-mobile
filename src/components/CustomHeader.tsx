@@ -30,7 +30,7 @@ export default function CustomHeader({ title }: CustomHeaderProps) {
   }
 
   return (
-    <View className="flex-row justify-between items-center w-full pr-6">
+    <View className="flex-row justify-between items-center w-full">
       <StatusBar backgroundColor={yellow400} />
 
       <Text className="font-medium text-lg">{title}</Text>
