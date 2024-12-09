@@ -1,5 +1,7 @@
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
+import { handleReqError } from '../../../utils/handleReqError';
 import { api } from '../../api';
 import { useAuthContext } from '../../contexts/auth';
 import { useBookContext } from '../../contexts/book';
@@ -8,11 +10,12 @@ import DisplayBook from './displayBook';
 import LoanBook from './loanBook';
 import ReturnBook from './returnBook';
 
-type currentScreenType = 'DisplayBook' | 'LoanBook' | 'ReturnBook' | 'undefined';
+export type currentScreenType = 'DisplayBook' | 'LoanBook' | 'ReturnBook' | 'undefined';
 
 export default function BookInfo() {
+  const navigation = useNavigation();
   const { bookId } = useBookContext();
-  const { token } = useAuthContext();
+  const { token, signOff } = useAuthContext();
   const [book, setBook] = useState<Book>();
   const [currentScreen, setCurrentScreen] = useState<currentScreenType>('undefined');
 
@@ -24,12 +27,19 @@ export default function BookInfo() {
       .then(res => {
         setBook(res.data);
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
+        handleReqError({ error, navigation, signOff });
       });
   }
 
   onLoadFunction();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      onLoadFunction();
+    }, [])
+  );
 
   function reloadOnDisplay() {
     onLoadFunction();
@@ -41,15 +51,15 @@ export default function BookInfo() {
   }, []);
 
   function renderContent(screenType: currentScreenType) {
-    const renderContentByType = useMemo(
+    const renderContentByScreenType = useMemo(
       () => ({
         DisplayBook: <DisplayBook book={book} />,
         LoanBook: <LoanBook bookId={book?.id} />,
-        ReturnBook: <ReturnBook />,
+        ReturnBook: <ReturnBook setCurrentScreen={setCurrentScreen} />,
       }),
       [screenType]
     );
-    return renderContentByType[screenType as keyof typeof renderContentByType];
+    return renderContentByScreenType[screenType as keyof typeof renderContentByScreenType];
   }
 
   return (
@@ -81,6 +91,13 @@ export default function BookInfo() {
             <Text>Devolver</Text>
           </TouchableOpacity>
         )}
+
+        <TouchableOpacity
+          className="bg-pink-400 justify-center items-center grow"
+          onPress={() => navigation.navigate('RegisterBook' as never)}
+        >
+          <Text>Editar</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

@@ -1,14 +1,20 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { Alert, Text, View } from 'react-native';
-import { api } from '../../api';
+import { currentScreenType } from '.';
+import { handleReqError } from '../../../utils/handleReqError';
+import { api, handleRes } from '../../api';
 import { yellow400 } from '../../colors';
 import CustomButton from '../../components/CustomButton';
 import { useAuthContext } from '../../contexts/auth';
 import { useBookContext } from '../../contexts/book';
 import { RentHistory } from '../../types';
 
-export default function ReturnBook() {
+interface ReturnBookProps {
+  setCurrentScreen: React.Dispatch<React.SetStateAction<currentScreenType>>;
+}
+
+export default function ReturnBook({ setCurrentScreen }: ReturnBookProps) {
   const { token, signOff } = useAuthContext();
   const { bookId } = useBookContext();
   const navigation = useNavigation();
@@ -27,20 +33,7 @@ export default function ReturnBook() {
     })
     .catch(error => {
       console.log(error);
-
-      if (error.request.status && error.response.status === 401) {
-        Alert.alert('Operação não autorizada', 'Redirecionando para a tela de login...', [
-          {
-            text: 'Ok',
-            onPress: () => {
-              signOff;
-              navigation.navigate('Login' as never);
-            },
-          },
-        ]);
-      } else {
-        Alert.alert('Erro', 'Algo deu errado...', [{ text: 'OK' }]);
-      }
+      handleReqError({ error, navigation, signOff });
     });
 
   function returnBook() {
@@ -49,32 +42,10 @@ export default function ReturnBook() {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(res => {
-        if (res.data.statusCode === 400) {
-          Alert.alert('Erro', 'Algo deu errado...', [{ text: 'OK' }]);
-        } else {
-          Alert.alert('Sucesso!', 'Informações salvas com sucesso!', [{ text: 'OK' }]);
-        }
+        handleRes({ res, onPressOk: setCurrentScreen('DisplayBook') });
       })
       .catch(error => {
-        if (error instanceof Error) {
-          console.log('error => ', error.message);
-        } else {
-          console.log(error);
-        }
-
-        if (error.request.status && error.response.status === 401) {
-          Alert.alert('Operação não autorizada', 'Redirecionando para a tela de login...', [
-            {
-              text: 'Ok',
-              onPress: () => {
-                signOff;
-                navigation.navigate('Login' as never);
-              },
-            },
-          ]);
-        } else {
-          Alert.alert('Erro', 'Algo deu errado...', [{ text: 'OK' }]);
-        }
+        handleReqError({ error, navigation, signOff });
       });
   }
 
