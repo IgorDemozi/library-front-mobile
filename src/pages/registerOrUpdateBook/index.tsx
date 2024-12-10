@@ -1,15 +1,19 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as ImagePicker from 'expo-image-picker';
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { z } from 'zod';
-import FormInput from '../../components/FormInput';
-import { yellow400 } from '../../colors';
-import AddIcon from '../../assets/images/register/add_icon';
-import { api } from '../../api';
 import { useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { z } from 'zod';
+import { BASE_URL } from '../../../env';
+import { handleReqError } from '../../../utils/handleReqError';
+import { api, handleRes } from '../../api';
+import AddIcon from '../../assets/images/register/add_icon';
+import { yellow400 } from '../../colors';
+import FormInput from '../../components/FormInput';
 import { useAuthContext } from '../../contexts/auth';
+import { useBookContext } from '../../contexts/book';
+import { Book } from '../../types';
 
 const validationSchema = z.object({
   title: z.string().min(1, { message: 'Este campo é obrigatório' }),
@@ -24,11 +28,13 @@ const validationSchema = z.object({
 
 type ValidationSchema = z.infer<typeof validationSchema>;
 
-export default function RegisterBook() {
+export default function RegisterOrUpdateBook() {
+  const { bookId } = useBookContext();
   const navigation = useNavigation();
   const { signOff, token } = useAuthContext();
   const [filePreview, setFilePreview] = useState<string | null>(null);
-  const { control, handleSubmit } = useForm<ValidationSchema>({
+  const [book, setBook] = useState<Book>();
+  const { control, handleSubmit, setValue } = useForm<ValidationSchema>({
     mode: 'onBlur',
     resolver: zodResolver(validationSchema),
     defaultValues: {
@@ -40,10 +46,32 @@ export default function RegisterBook() {
     },
   });
 
+  useEffect(() => {
+    if (bookId) {
+      api
+        .get(`books/${bookId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(res => {
+          setBook(res.data);
+          setValue('title', res.data.title);
+          setValue('synopsis', res.data.synopsis);
+          setValue('author', res.data.author);
+          setValue('genre', res.data.genre);
+          setValue('systemEntryDate', new Date(res.data.systemEntryDate));
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      console.log('sem bookID');
+    }
+  }, [filePreview]);
+
   async function openImagePicker() {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ['images'],
         quality: 1,
       });
 
@@ -55,7 +83,29 @@ export default function RegisterBook() {
     }
   }
 
-  function registerBook(data: ValidationSchema) {
+  function renderImageComponent() {
+    if (filePreview) {
+      return <Image source={{ uri: filePreview }} className="h-full w-full object-cover" />;
+    }
+
+    if (book) {
+      return (
+        <Image
+          source={{ uri: `${BASE_URL}/upload/${book.image}` }}
+          className="h-full w-full object-cover"
+        />
+      );
+    }
+
+    return (
+      <View className="flex-row items-center space-x-2">
+        <AddIcon size={24} color={yellow400} />
+        <Text className="font-body text-base text-yellow-400">Adicionar capa</Text>
+      </View>
+    );
+  }
+
+  function registerOrUpdateBook(data: ValidationSchema) {
     const newBookData = {
       title: data.title,
       author: data.author,
@@ -70,41 +120,40 @@ export default function RegisterBook() {
     if (filePreview) {
       formData.append('image', {
         uri: filePreview,
-        name: 'image.jpg',
+        name: bookId + '.jpg',
         type: 'image/jpeg',
       } as any);
     }
 
-    api
-      .post('/books/mobilePostBook', formData, {
-        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
-      })
-      .then(res => {
-        console.log(res.data);
-
-        if (res.data.statusCode === 400) {
-          Alert.alert('Erro', 'Algo deu errado...', [{ text: 'OK' }]);
-        } else {
-          Alert.alert('Sucesso!', 'Informações salvas com sucesso!', [{ text: 'OK' }]);
-        }
-      })
-      .catch(error => {
-        console.log(error);
-
-        if (error.request.status && error.response.status === 401) {
-          Alert.alert('Operação não autorizada', 'Redirecionando para a tela de login...', [
-            {
-              text: 'Ok',
-              onPress: () => {
-                signOff;
-                navigation.navigate('Login' as never);
-              },
-            },
-          ]);
-        } else {
-          Alert.alert('Erro', 'Algo deu errado...', [{ text: 'OK' }]);
-        }
-      });
+    if (bookId) {
+      api
+        .patch(`/books/${bookId}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data', Authorization: 'Bearer ' + token },
+        })
+        .then(res => {
+          console.log(res.data);
+          handleRes({ res });
+          setFilePreview(null);
+        })
+        .catch(error => {
+          console.log(error);
+          handleReqError({ error, navigation, signOff });
+        });
+    } else {
+      api
+        .post('/books/mobilePostBook', formData, {
+          headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
+        })
+        .then(res => {
+          console.log(res.data);
+          handleRes({ res });
+          setFilePreview(null);
+        })
+        .catch(error => {
+          console.log(error);
+          handleReqError({ error, navigation, signOff });
+        });
+    }
   }
 
   return (
@@ -120,14 +169,7 @@ export default function RegisterBook() {
             className="h-64 w-44 items-center justify-center border-dashed border-2"
             style={{ borderColor: yellow400 }}
           >
-            {filePreview ? (
-              <Image source={{ uri: filePreview }} className="h-full w-full object-cover" />
-            ) : (
-              <View className="flex-row items-center space-x-2">
-                <AddIcon size={24} color={yellow400} />
-                <Text className="font-body text-base text-yellow-400">Adicionar capa</Text>
-              </View>
-            )}
+            {renderImageComponent()}
           </TouchableOpacity>
 
           <View className="w-full">
@@ -160,9 +202,11 @@ export default function RegisterBook() {
         <View className="items-center">
           <TouchableOpacity
             className="border-2 rounded-lg py-2 px-4 w-fit bg-yellow-400"
-            onPress={handleSubmit(registerBook)}
+            onPress={handleSubmit(registerOrUpdateBook)}
           >
-            <Text className="text-lg text-center font-medium">Cadastrar</Text>
+            <Text className="text-lg text-center font-medium">
+              {bookId ? 'Salvar alterações' : 'Cadastrar'}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -1,48 +1,104 @@
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import React, { useState } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { handleReqError } from '../../../utils/handleReqError';
 import { api } from '../../api';
-import { yellow400 } from '../../colors';
 import { useAuthContext } from '../../contexts/auth';
 import { useBookContext } from '../../contexts/book';
 import { Book } from '../../types';
 import DisplayBook from './displayBook';
+import LoanBook from './loanBook';
+import ReturnBook from './returnBook';
 
-const Drawer = createDrawerNavigator();
+export type currentScreenType = 'DisplayBook' | 'LoanBook' | 'ReturnBook' | 'undefined';
 
 export default function BookInfo() {
+  const navigation = useNavigation();
   const { bookId } = useBookContext();
-  const { token } = useAuthContext();
+  const { token, signOff } = useAuthContext();
   const [book, setBook] = useState<Book>();
+  const [currentScreen, setCurrentScreen] = useState<currentScreenType>('undefined');
 
-  api
-    .get(`books/${bookId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    .then(res => {
-      setBook(res.data);
-    })
-    .catch(err => {
-      console.log(err);
-    });
+  function onLoadFunction() {
+    api
+      .get(`books/${bookId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(res => {
+        setBook(res.data);
+      })
+      .catch(error => {
+        console.log(error);
+        handleReqError({ error, navigation, signOff });
+      });
+  }
+
+  onLoadFunction();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      onLoadFunction();
+    }, [])
+  );
+
+  function reloadOnDisplay() {
+    onLoadFunction();
+    setCurrentScreen('DisplayBook');
+  }
+
+  useEffect(() => {
+    setCurrentScreen('DisplayBook');
+  }, []);
+
+  function renderContent(screenType: currentScreenType) {
+    const renderContentByScreenType = useMemo(
+      () => ({
+        DisplayBook: <DisplayBook book={book} />,
+        LoanBook: <LoanBook bookId={book?.id} />,
+        ReturnBook: <ReturnBook setCurrentScreen={setCurrentScreen} />,
+      }),
+      [screenType]
+    );
+    return renderContentByScreenType[screenType as keyof typeof renderContentByScreenType];
+  }
 
   return (
-    <Drawer.Navigator
-      screenOptions={{
-        drawerActiveBackgroundColor: '#fef08a',
-        drawerActiveTintColor: '#000',
-        // drawerInactiveBackgroundColor: '#f1f1f1',
-        // drawerInactiveTintColor: '#000',
-        headerStyle: { backgroundColor: yellow400 },
-      }}
-    >
-      <Drawer.Screen
-        name="DisplayBook"
-        options={{
-          title: 'Informações do livro',
-        }}
-      >
-        {() => <DisplayBook book={book} />}
-      </Drawer.Screen>
-    </Drawer.Navigator>
+    <View className="flex-1">
+      <View className="grow">{renderContent(currentScreen)}</View>
+
+      <View className="flex-row justify-around h-14">
+        <TouchableOpacity
+          className="bg-pink-400 justify-center items-center grow"
+          onPress={reloadOnDisplay}
+        >
+          <Text>Informações</Text>
+        </TouchableOpacity>
+
+        {!book?.isRented && (
+          <TouchableOpacity
+            className="bg-green-400 justify-center items-center grow"
+            onPress={() => setCurrentScreen('LoanBook')}
+          >
+            <Text>Emprestar</Text>
+          </TouchableOpacity>
+        )}
+
+        {book?.isRented && (
+          <TouchableOpacity
+            className="bg-green-400 justify-center items-center grow"
+            onPress={() => setCurrentScreen('ReturnBook')}
+          >
+            <Text>Devolver</Text>
+          </TouchableOpacity>
+        )}
+
+        <TouchableOpacity
+          className="bg-pink-400 justify-center items-center grow"
+          onPress={() => navigation.navigate('RegisterBook' as never)}
+        >
+          <Text>Editar</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }

@@ -4,7 +4,7 @@ import CustomHeader from '../components/CustomHeader';
 import BookInfo from '../pages/bookInfo';
 import Home from '../pages/home';
 import Login from '../pages/login';
-import RegisterBook from '../pages/registerBook';
+import RegisterBook from '../pages/registerOrUpdateBook';
 import SearchBook from '../pages/searchPage';
 
 const StackNavigator = createNativeStackNavigator();

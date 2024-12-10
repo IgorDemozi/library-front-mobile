@@ -1,13 +1,13 @@
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { BASE_URL } from '../../../env';
 import { api } from '../../api';
 import SearchIcon from '../../assets/images/searchPage/search_icon';
 import { gray, slate600 } from '../../colors';
 import { useAuthContext } from '../../contexts/auth';
-import { Book } from '../../types';
-import { BASE_URL } from '../../../env';
 import { useBookContext } from '../../contexts/book';
-import { useNavigation } from '@react-navigation/native';
+import { Book } from '../../types';
 
 export default function SearchBook() {
   const { token } = useAuthContext();
@@ -18,7 +18,7 @@ export default function SearchBook() {
   const [loadingMessage, setLoadingMessage] = useState('Carregando informações...');
   const imgSize = 180;
 
-  useEffect(() => {
+  function onLoadFunction() {
     api
       .get('books', {
         headers: { Authorization: `Bearer ${token}` },
@@ -31,7 +31,18 @@ export default function SearchBook() {
         setLoadingMessage('Não foi possível trazer os dados');
         console.log(err);
       });
+  }
+
+  useEffect(() => {
+    onLoadFunction();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setBookId('');
+      onLoadFunction();
+    }, [])
+  );
 
   function renderBook(book: Book) {
     if (book.title.toLowerCase().includes(search.toLowerCase())) {
