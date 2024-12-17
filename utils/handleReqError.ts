@@ -9,12 +9,6 @@ interface HandleReqErrorProps {
   };
 }
 export function handleReqError({ error, navigation, signOff }: HandleReqErrorProps) {
-  if (error instanceof Error) {
-    console.log('error => ', error);
-  } else {
-    console.log(error);
-  }
-
   if (error.request.status && error.response.status === 401) {
     Alert.alert('Operação não autorizada', 'Redirecionando para a tela de login...', [
       {
@@ -25,7 +19,16 @@ export function handleReqError({ error, navigation, signOff }: HandleReqErrorPro
         },
       },
     ]);
+  }
+
+  if (error.request.status && error.response.status === 404) {
+    Alert.alert('Erro', 'Dados não encontrados', [{ text: 'OK' }]);
+  }
+
+  if (error instanceof Error) {
+    console.log('error => ', error);
   } else {
+    console.log(error);
     Alert.alert('Erro', 'Algo deu errado...', [{ text: 'OK' }]);
   }
 }
