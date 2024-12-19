@@ -9,11 +9,12 @@ interface RentHistoryDisplayProps {
 
 export default function RentHistoryDisplay({ rentHistory, index }: RentHistoryDisplayProps) {
   return (
-    <View key={index} className="flex-row ml-2">
-      <Text className="flex-1">{rentHistory.studentName}</Text>
-      <Text className="flex-1">{rentHistory.class}</Text>
-      <Text className="flex-1">{rentHistory.loanDate}</Text>
-      <Text className="flex-1">{rentHistory.returnDate}</Text>
+    <View key={index} className="flex-row ml-2 text-xs">
+      {rentHistory.title && <Text className="flex-1 text-xs">{rentHistory.title}</Text>}
+      <Text className="flex-1 text-xs">{rentHistory.studentName}</Text>
+      <Text className="flex-1 text-xs">{rentHistory.class}</Text>
+      <Text className="flex-1 text-xs">{rentHistory.loanDate}</Text>
+      <Text className="flex-1 text-xs">{rentHistory.returnDate}</Text>
     </View>
   );
 }
