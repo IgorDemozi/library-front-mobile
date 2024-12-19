@@ -8,9 +8,15 @@ import { useBookContext } from '../../contexts/book';
 import { Book } from '../../types';
 import DisplayBook from './displayBook';
 import LoanBook from './loanBook';
+import RentHistoryScreen from './rentHistory';
 import ReturnBook from './returnBook';
 
-export type currentScreenType = 'DisplayBook' | 'LoanBook' | 'ReturnBook' | 'undefined';
+export type currentScreenType =
+  | 'DisplayBook'
+  | 'LoanBook'
+  | 'ReturnBook'
+  | 'RentHistory'
+  | 'undefined';
 
 export default function BookInfo() {
   const navigation = useNavigation();
@@ -56,6 +62,7 @@ export default function BookInfo() {
         DisplayBook: <DisplayBook book={book} />,
         LoanBook: <LoanBook bookId={book?.id} />,
         ReturnBook: <ReturnBook setCurrentScreen={setCurrentScreen} />,
+        RentHistory: <RentHistoryScreen />,
       }),
       [screenType]
     );
@@ -68,7 +75,7 @@ export default function BookInfo() {
 
       <View className="flex-row justify-around h-14">
         <TouchableOpacity
-          className="bg-pink-400 justify-center items-center grow"
+          className="bg-pink-400 justify-center items-center flex-1"
           onPress={reloadOnDisplay}
         >
           <Text>Informações</Text>
@@ -76,7 +83,7 @@ export default function BookInfo() {
 
         {!book?.isRented && (
           <TouchableOpacity
-            className="bg-green-400 justify-center items-center grow"
+            className="bg-green-400 justify-center items-center flex-1"
             onPress={() => setCurrentScreen('LoanBook')}
           >
             <Text>Emprestar</Text>
@@ -85,7 +92,7 @@ export default function BookInfo() {
 
         {book?.isRented && (
           <TouchableOpacity
-            className="bg-green-400 justify-center items-center grow"
+            className="bg-green-400 justify-center items-center flex-1"
             onPress={() => setCurrentScreen('ReturnBook')}
           >
             <Text>Devolver</Text>
@@ -93,10 +100,17 @@ export default function BookInfo() {
         )}
 
         <TouchableOpacity
-          className="bg-pink-400 justify-center items-center grow"
+          className="bg-pink-400 justify-center items-center flex-1"
           onPress={() => navigation.navigate('RegisterBook' as never)}
         >
           <Text>Editar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          className="bg-green-400 justify-center items-center flex-1"
+          onPress={() => setCurrentScreen('RentHistory')}
+        >
+          <Text>Histórico</Text>
         </TouchableOpacity>
       </View>
     </View>
