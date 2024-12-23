@@ -5,6 +5,7 @@ import BookInfo from '../pages/bookInfo';
 import Home from '../pages/home';
 import Login from '../pages/login';
 import RegisterBook from '../pages/registerOrUpdateBook';
+import RentHistories from '../pages/rentHistories';
 import SearchBook from '../pages/searchPage';
 
 const StackNavigator = createNativeStackNavigator();
@@ -34,6 +35,11 @@ export default function Routes() {
         name="BookInfo"
         component={BookInfo}
         options={{ headerShown: false }}
+      />
+      <StackNavigator.Screen
+        name="RentHistories"
+        component={RentHistories}
+        options={{ headerTitle: () => <CustomHeader title="Históricos" /> }}
       />
     </StackNavigator.Navigator>
   );

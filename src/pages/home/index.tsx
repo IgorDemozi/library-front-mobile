@@ -38,7 +38,10 @@ export default function Home() {
           <Text className="text-lg text-center text-slate-600 font-medium">Biblioteca</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity className="border-2 border-slate-600 flex-row justify-between py-3 px-6 rounded-lg w-full bg-slate-200">
+        <TouchableOpacity
+          className="border-2 border-slate-600 flex-row justify-between py-3 px-6 rounded-lg w-full bg-slate-200"
+          onPress={() => navigation.navigate('RentHistories' as never)}
+        >
           <HomeLoanIcon size={28} color="#475569" />
           <Text className="text-lg text-center text-slate-600 font-medium">Empréstimos</Text>
         </TouchableOpacity>
