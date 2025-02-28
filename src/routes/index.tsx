@@ -7,6 +7,8 @@ import Login from '../pages/login';
 import RegisterBook from '../pages/registerOrUpdateBook';
 import RentHistories from '../pages/rentHistories';
 import SearchBook from '../pages/searchPage';
+import UserList from '../pages/userList';
+import UserCreate from '../pages/userCreate';
 
 const StackNavigator = createNativeStackNavigator();
 
@@ -40,6 +42,16 @@ export default function Routes() {
         name="RentHistories"
         component={RentHistories}
         options={{ headerTitle: () => <CustomHeader title="Históricos" /> }}
+      />
+      <StackNavigator.Screen
+        name="UsersList"
+        component={UserList}
+        options={{ headerTitle: () => <CustomHeader title="Usuários - Listagem" /> }}
+      />
+      <StackNavigator.Screen
+        name="UsersCreate"
+        component={UserCreate}
+        options={{ headerTitle: () => <CustomHeader title="Usuários - Criar" /> }}
       />
     </StackNavigator.Navigator>
   );

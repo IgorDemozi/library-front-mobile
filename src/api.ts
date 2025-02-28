@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Alert } from 'react-native';
 import { BASE_URL } from '../env';
 
@@ -7,15 +7,16 @@ export const api = axios.create({
 });
 
 interface HandleResProps {
-  res: axios.AxiosResponse<any, any>;
+  res: AxiosResponse<any, any>;
   onPressOk?: void;
+  customMessage?: string;
 }
 
-export function handleRes({ res, onPressOk }: HandleResProps) {
+export function handleRes({ res, onPressOk, customMessage }: HandleResProps) {
   if (res.data.statusCode === 400) {
     Alert.alert('Erro', 'Algo deu errado...', [{ text: 'OK' }]);
   } else if (onPressOk) {
-    Alert.alert('Sucesso!', 'Informações salvas com sucesso!', [
+    Alert.alert('Sucesso!', customMessage || 'Informações salvas com sucesso!', [
       {
         text: 'OK',
         onPress: () => {
@@ -24,6 +25,6 @@ export function handleRes({ res, onPressOk }: HandleResProps) {
       },
     ]);
   } else {
-    Alert.alert('Sucesso!', 'Informações salvas com sucesso!', [{ text: 'OK' }]);
+    Alert.alert('Sucesso!', customMessage || 'Informações salvas com sucesso!', [{ text: 'OK' }]);
   }
 }

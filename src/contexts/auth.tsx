@@ -19,7 +19,7 @@ function AuthProvider({ children }: IChildrenProp) {
     let isSignedIn = '';
 
     await api
-      .post('/login', {
+      .post('/user/login', {
         email: email,
         password: password,
       })

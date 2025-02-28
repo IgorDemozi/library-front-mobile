@@ -14,7 +14,7 @@ export default function SearchBook() {
   const { setBookId } = useBookContext();
   const navigation = useNavigation();
   const [books, setBooks] = useState<Book[]>();
-  const [search, setsearch] = useState('');
+  const [search, setSearch] = useState('');
   const [loadingMessage, setLoadingMessage] = useState('Carregando informações...');
   const imgSize = 180;
 
@@ -80,7 +80,7 @@ export default function SearchBook() {
         style={{ borderColor: gray }}
       >
         <TextInput
-          onChangeText={setsearch}
+          onChangeText={setSearch}
           className="mx-2 flex-1 h-11 text-lg text-slate-600"
           placeholder="Pesquisar"
         />

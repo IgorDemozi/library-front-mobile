@@ -39,11 +39,11 @@ export default function BookInfo() {
       });
   }
 
-  onLoadFunction();
+  // onLoadFunction();
 
   useFocusEffect(
     React.useCallback(() => {
-      onLoadFunction();
+      reloadOnDisplay();
     }, [])
   );
 
@@ -53,13 +53,13 @@ export default function BookInfo() {
   }
 
   useEffect(() => {
-    setCurrentScreen('DisplayBook');
+    onLoadFunction();
   }, []);
 
   function renderContent(screenType: currentScreenType) {
     const renderContentByScreenType = useMemo(
       () => ({
-        DisplayBook: <DisplayBook book={book} />,
+        // DisplayBook: <DisplayBook book={book} />,
         LoanBook: <LoanBook bookId={book?.id} />,
         ReturnBook: <ReturnBook setCurrentScreen={setCurrentScreen} />,
         RentHistory: <RentHistoryScreen />,
@@ -71,7 +71,10 @@ export default function BookInfo() {
 
   return (
     <View className="flex-1">
-      <View className="grow">{renderContent(currentScreen)}</View>
+      <View className="grow">
+        {currentScreen === 'DisplayBook' && <DisplayBook book={book} />}
+        {renderContent(currentScreen)}
+      </View>
 
       <View className="flex-row justify-around h-14">
         <TouchableOpacity
